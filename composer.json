@@ -1,0 +1,13 @@
+{
+    "name": "karol/doria",
+    "description": "A PHP application for tracking expensions",
+    "type": "project",
+    "require": {},
+    "autoload":{
+        "psr-4":{
+            "Framework\\": "src/Framework",
+            "App\\":"src/App"
+        }
+    }
+
+}
