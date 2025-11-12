@@ -1,14 +1,20 @@
 <?php include $this->resolve("partials/_header.php"); ?>
-<!-- Start Main Content Area -->
-<section
-    class="container mx-auto mt-12 p-4 bg-white shadow-md border border-gray-200 rounded">
-    <!-- Page Title -->
-    <h3>About Page</h3>
 
-    <hr />
+<div class="container my-3 ">
+    <h1 class="display-4">Learn More About the Budget App</h1>
+    <p class="lead">This is a powerful tool to keep track of your finances. You can easily manage your expenses, set budgets, and stay on top of your spending.</p>
 
-    <!-- Escaping Data -->
-    <p>Escaping Data:<?php echo e($dangerousData); ?> </p>
-</section>
-<!-- End Main Content Area -->
+    <h2>Features</h2>
+    <ul>
+        <li>Track your income and expenses</li>
+        <li>Set monthly and weekly budgets</li>
+        <li>View reports and analytics</li>
+    </ul>
+
+    <h2>Why Choose Our App?</h2>
+    <p>This app helps you make smarter financial decisions and achieve your financial goals. Whether you're saving for a vacation or managing daily expenses, our app is designed to help you stay organized.</p>
+
+    <a href="/login" class="btn btn-primary">Back to Home</a>
+</div>
+
 <?php include $this->resolve("partials/_footer.php"); ?>

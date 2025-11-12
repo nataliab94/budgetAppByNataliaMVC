@@ -37,6 +37,12 @@ class AuthController
         echo $this->view->render("login.php");
     }
 
+    public function balanceView()
+    {
+        echo $this->view->render("balance.php");
+    }
+
+
     public function login()
     {
         $this->validatorService->validateLogin($_POST);
@@ -48,9 +54,8 @@ class AuthController
 
     public function logout()
     {
-
         $this->userService->logout();
 
-        redirectTo('/logout');
+        redirectTo('/login');
     }
 }

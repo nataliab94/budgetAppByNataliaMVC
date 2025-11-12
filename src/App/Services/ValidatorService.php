@@ -41,13 +41,10 @@ class ValidatorService
     public function validateRegister(array $formData)
     {
         $this->validator->validate($formData, [
+            'login' => ['required', 'lengthMax:12'],
             'email' => ['required', 'email'],
-            'age' => ['required', 'min:18'],
-            'country' => ['required', 'in:USA,Canada,Mexico'],
-            'socialMediaURL' => ['required', 'url'],
             'password' => ['required'],
-            'confirmPassword' => ['required', 'match:password'],
-            'tos' => ['required']
+            'confirmPassword' => ['required', 'match:password']
         ]);
     }
 
@@ -59,12 +56,23 @@ class ValidatorService
 
         ]);
     }
+
+
     public function validateTransaction(array $formData)
     {
         $this->validator->validate($formData, [
-            'description' => ['required', 'lengthMax:255'],
+            'description' => ['lengthMax:255'],
             'amount' => ['required', 'numeric'],
             'date' => ['required', 'dateFormat:Y-m-d']
+        ]);
+    }
+
+    public function validateDataToChange(array $formData)
+    {
+        $this->validator->validate($formData, [
+            'email' => ['required', 'email'],
+            'password' => ['required'],
+            'confirmPassword' => ['required', 'match:password'],
         ]);
     }
 }

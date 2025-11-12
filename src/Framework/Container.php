@@ -59,12 +59,12 @@ class Container
     }
     public function get(string $id)
     {
-        if (!array_key_exists($id, $this->definitions)) {
-            throw new ContainerException("Class {$id} does not exist in container.");
-        }
-
         if (array_key_exists($id, $this->resolved)) {
             return $this->resolved[$id];
+        }
+
+        if (!array_key_exists($id, $this->definitions)) {
+            throw new ContainerException("Class {$id} does not exist in container.");
         }
 
         $factory = $this->definitions[$id];

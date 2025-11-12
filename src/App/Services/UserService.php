@@ -21,8 +21,7 @@ class UserService
         )->count();
 
         if ($emailCount > 0) {
-
-            throw new ValidationException(['email' => 'Email taken']);
+            throw new ValidationException(['email' => ['Email taken']]);
         }
     }
 
@@ -33,21 +32,63 @@ class UserService
 
 
         $this->db->query(
-            "INSERT INTO users(email, password, age, country, social_media_url)
-            VALUES(:email, :password,:age, :country, :url)",
+            "INSERT INTO users (username, email, password)
+     VALUES (:username, :email, :password)",
             [
+                'username' => $formData['login'], // <-- używamy username
                 'email' => $formData['email'],
-                'password' => $password,
-                'age' => $formData['age'],
-                'country' => $formData['country'],
-                'url' => $formData['socialMediaURL']
+                'password' => $password
             ]
         );
 
-        session_regenerate_id();
+        $userId = $this->db->id();
 
-        $_SESSION['user'] = $this->db->id();
+        $defaultCategoriesIncome = $this->db->query("SELECT name FROM incomes_category_default")->findAll();
+
+        foreach ($defaultCategoriesIncome as $category) {
+            $this->db->query(
+                "INSERT INTO incomes_category_assigned_to_users (user_id, name)
+             VALUES (:user_id, :name)",
+                [
+                    'user_id' => $userId,
+                    'name' => $category['name'],
+                ]
+            );
+        }
+
+
+        $defaultCategoriesExpense = $this->db->query("SELECT name FROM expenses_category_default")->findAll();
+
+        foreach ($defaultCategoriesExpense as $category) {
+            $this->db->query(
+                "INSERT INTO expenses_category_assigned_to_users (user_id, name)
+             VALUES (:user_id, :name)",
+                [
+                    'user_id' => $userId,
+                    'name' => $category['name'],
+                ]
+            );
+        }
+        $defaultPaymentMethods = $this->db->query("SELECT name FROM payment_methods_default")->findAll();
+
+        foreach ($defaultPaymentMethods as $paymentMethod) {
+            $this->db->query(
+                "INSERT INTO payment_methods_assigned_to_users (user_id, name)
+             VALUES (:user_id, :name)",
+                [
+                    'user_id' => $userId,
+                    'name' => $paymentMethod['name'],
+                ]
+            );
+
+
+            session_regenerate_id();
+            $_SESSION['user'] = $userId;
+        }
     }
+
+
+
     public function login(array $formData)
     {
         $user = $this->db->query("SELECT * FROM users WHERE email = :email", [
@@ -64,21 +105,24 @@ class UserService
         }
 
         session_regenerate_id();
+
         $_SESSION['user'] = $user['id'];
     }
 
-    public function logout()
+    public function logout(): void
     {
-        //unset($_SESSION['user']);
+
+        if (session_status() !== PHP_SESSION_ACTIVE) {
+            session_start();
+        }
+
+        $_SESSION = [];
 
         session_destroy();
 
-        // session_regenerate_id();
-
         $params = session_get_cookie_params();
-
         setcookie(
-            "PHPSESSID",
+            session_name(), // 'PHPSESSID'
             '',
             time() - 3600,
             $params['path'],
@@ -86,5 +130,7 @@ class UserService
             $params['secure'],
             $params['httponly']
         );
+
+        redirectTo('/login');
     }
 }

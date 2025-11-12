@@ -5,17 +5,12 @@ declare(strict_types=1);
 namespace App\Controllers;
 
 use Framework\TemplateEngine;
-use App\Services\TransactionService;
 
 class HomeController
 {
     public function __construct(
-        private TemplateEngine $view,
-        private TransactionService $transactionService
-    ) {
-        //var_dump($this->view);
-        //echo "<br>";
-    }
+        private TemplateEngine $view
+    ) {}
 
     public function home()
     {
@@ -25,10 +20,13 @@ class HomeController
         $offset = ($page - 1) * $length;
         $searchTerm = $_GET['s'] ?? null;
 
-        [$transactions, $count] = $this->transactionService->getUserTransactions(
-            $length,
-            $offset
-        );
+        // Dane testowe, zamiast bazy
+        $transactions = [
+            ['id' => 1, 'description' => 'Salary', 'amount' => 5000, 'date' => '2025-11-01'],
+            ['id' => 2, 'description' => 'Gift', 'amount' => 300, 'date' => '2025-11-02'],
+            ['id' => 3, 'description' => 'Bonus', 'amount' => 1500, 'date' => '2025-11-03'],
+        ];
+        $count = count($transactions);
 
         $lastPage = ceil($count / $length);
         $pages = $lastPage ? range(1, $lastPage) : [];
@@ -55,7 +53,6 @@ class HomeController
             ]),
             'pageLinks' => $pageLinks,
             'searchTerm' => $searchTerm
-
         ]);
     }
 }

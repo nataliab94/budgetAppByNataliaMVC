@@ -5,20 +5,14 @@ declare(strict_types=1);
 namespace App\Controllers;
 
 use Framework\TemplateEngine;
-use App\Config\Paths;
 
 class AboutController
 {
-
     public function __construct(private TemplateEngine $view) {}
-    public function about()
+
+    public function about(): void
     {
-        echo $this->view->render(
-            'about.php',
-            [
-                'title' => 'About',
-                'dangerousData' => 'script>alert(123)</script>'
-            ]
-        );
+        // Wystarczy tylko wyrenderować plik about.php
+        echo $this->view->render('about.php');
     }
 }
