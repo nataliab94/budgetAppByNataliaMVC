@@ -133,4 +133,21 @@ class UserService
 
         redirectTo('/login');
     }
+
+    public function deleteAccount(int $userId): void
+    {
+
+        $this->db->query("DELETE FROM incomes WHERE user_id = :user_id", ['user_id' => $userId]);
+        $this->db->query("DELETE FROM expenses WHERE user_id = :user_id", ['user_id' => $userId]);
+        $this->db->query("DELETE FROM incomes_category_assigned_to_users WHERE user_id = :user_id", ['user_id' => $userId]);
+        $this->db->query("DELETE FROM expenses_category_assigned_to_users WHERE user_id = :user_id", ['user_id' => $userId]);
+        $this->db->query("DELETE FROM payment_methods_assigned_to_users WHERE user_id = :user_id", ['user_id' => $userId]);
+        $this->db->query("DELETE FROM users WHERE id = :user_id", ['user_id' => $userId]);
+
+        if (session_status() !== PHP_SESSION_ACTIVE) {
+            session_start();
+        }
+        $_SESSION = [];
+        session_destroy();
+    }
 }

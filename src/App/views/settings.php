@@ -1,4 +1,5 @@
 <?php include $this->resolve("partials/_header.php"); ?>
+<?php include $this->resolve("partials/_navbar.php"); ?>
 
 <section id="account_settings">
     <div class="container container-sm w-50 w-md-25">
@@ -63,9 +64,20 @@
             <div class="d-flex flex-wrap flex-md-row flex-column align-items-center justify-content-center mt-3 gap-1 mb-2">
                 <button type="submit" class="btn btn-primary w-auto m-1">Save changes</button>
                 <a href="/" class="btn btn-secondary w-auto m-1">Cancel</a>
-                <a href="/" class="btn btn-danger w-auto m-1">Delete Account</a>
+                <a href="/deleteAccount" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete your account? This action cannot be undone.');">
+                    Delete Account
+                </a>
             </div>
         </form>
+
+        <?php if (!empty($_SESSION['success'])): ?>
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <?php echo e($_SESSION['success']); ?>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            <?php unset($_SESSION['success']); ?>
+        <?php endif; ?>
+
     </div>
 </section>
 

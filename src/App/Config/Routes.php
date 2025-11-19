@@ -21,10 +21,21 @@ function registerRoutes(App $app)
     $app->post('/transaction/income', [TransactionController::class, 'createIncome'])->add(AuthRequiredMiddleware::class);
     $app->get('/transaction/expense', [TransactionController::class, 'createViewAddExpense'])->add(AuthRequiredMiddleware::class);
     $app->post('/transaction/expense', [TransactionController::class, 'createExpense'])->add(AuthRequiredMiddleware::class);
-    $app->post('/transactions/expense', [TransactionController::class, 'createExpense']);
     $app->get('/balance', [BalanceController::class, 'balanceView'])->add(AuthRequiredMiddleware::class);
     $app->get('/settings', [SettingsController::class, 'settingsView'])->add(AuthRequiredMiddleware::class);
     $app->post('/settings', [SettingsController::class, 'changeData'])->add(AuthRequiredMiddleware::class);
+    $app->get('/editIncome', [BalanceController::class, 'editIncomeView'])->add(AuthRequiredMiddleware::class);
+    $app->post('/editIncome', [BalanceController::class, 'editIncome'])->add(AuthRequiredMiddleware::class);
+    $app->get('/editExpense', [BalanceController::class, 'editExpenseView'])->add(AuthRequiredMiddleware::class);
+    $app->post('/editExpense', [BalanceController::class, 'editExpense'])->add(AuthRequiredMiddleware::class);
+    $app->get('/deleteIncome', [BalanceController::class, 'deleteIncome'])->add(AuthRequiredMiddleware::class);
+    $app->get('/deleteExpense', [BalanceController::class, 'deleteExpense'])->add(AuthRequiredMiddleware::class);
+    $app->get('/deleteAccount', [SettingsController::class, 'deleteAccount'])->add(AuthRequiredMiddleware::class);
+
+
+
+
+
 
     $app->setErrorHandler([ErrorController::class, 'notFound']);
 }

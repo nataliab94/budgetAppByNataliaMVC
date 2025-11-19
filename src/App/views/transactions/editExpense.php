@@ -1,34 +1,33 @@
 <?php include $this->resolve("partials/_header.php"); ?>
 <?php include $this->resolve("partials/_navbar.php"); ?>
 
-<section id="add_expense">
+<section id="edit_expense">
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-11 col-sm-10 col-md-8 col-lg-6 col-xl-5">
 
                 <div class="header_income d-flex justify-content-center align-items-center">
-                    <h2>Add expense</h2>
+                    <h2>Edit Expense</h2>
                     <div class="bag m-3">
                         <img class="money" src="/pictures/wydatek.png" height="50px" alt="bag with money" />
                     </div>
                 </div>
 
-                <form id="expenseForm" method="POST">
+                <form id="expenseForm" method="POST" action="/editExpense?id=<?= $expense['id'] ?>">
+
                     <?php include $this->resolve("partials/_csrf.php"); ?>
 
                     <!-- Amount -->
                     <div class="mb-1">
                         <label for="expense_amount" class="form-label fw-semibold">Amount</label>
                         <input
-                            value="<?php echo e($oldFormData['amount'] ?? ''); ?>"
+                            value="<?= htmlspecialchars($expense['amount']) ?>"
                             type="text"
-                            class="form-control <?php echo isset($errors['amount']) ? 'is-invalid' : ''; ?>"
+                            class="form-control <?= isset($errors['amount']) ? 'is-invalid' : '' ?>"
                             id="expense_amount"
                             name="amount">
                         <?php if (!empty($errors['amount'][0])) : ?>
-                            <div class="invalid-feedback d-block">
-                                <?php echo e($errors['amount'][0]); ?>
-                            </div>
+                            <div class="invalid-feedback d-block"><?= htmlspecialchars($errors['amount'][0]) ?></div>
                         <?php endif; ?>
                     </div>
 
@@ -36,15 +35,13 @@
                     <div class="mb-1">
                         <label for="dateInput" class="form-label fw-semibold">Date</label>
                         <input
-                            value="<?php echo e($oldFormData['date'] ?? date('Y-m-d')); ?>"
+                            value="<?= htmlspecialchars($expense['date']) ?>"
                             type="date"
-                            class="form-control <?php echo isset($errors['date']) ? 'is-invalid' : ''; ?>"
+                            class="form-control <?= isset($errors['date']) ? 'is-invalid' : '' ?>"
                             name="date"
                             id="dateInput">
                         <?php if (!empty($errors['date'][0])) : ?>
-                            <div class="invalid-feedback d-block">
-                                <?php echo e($errors['date'][0]); ?>
-                            </div>
+                            <div class="invalid-feedback d-block"><?= htmlspecialchars($errors['date'][0]) ?></div>
                         <?php endif; ?>
                     </div>
 
@@ -54,15 +51,19 @@
                         <select name="paymentMethod" id="paymentMethod" class="form-select">
                             <option value="">-- Choose payment method --</option>
                             <?php foreach ($paymentMethods as $method): ?>
-                                <option value="<?= htmlspecialchars($method['id']) ?>"><?= htmlspecialchars($method['name']) ?></option>
+                                <option value="<?= htmlspecialchars($method['id']) ?>"
+                                    <?= $expense['payment_method_id'] == $method['id'] ? 'selected' : '' ?>>
+                                    <?= htmlspecialchars($method['name']) ?>
+                                </option>
                             <?php endforeach; ?>
                             <option value="__new__">Add new payment method</option>
                         </select>
                     </div>
 
-                    <div id="newPaymentMethodGroup" style="display:none;">
+                    <div id="newPaymentMethodGroup" style="display: none;">
                         <label for="newPaymentMethodInput">New payment method:</label>
-                        <input type="text" name="new_payment_method" id="newPaymentMethodInput" class="form-control">
+                        <input type="text" name="new_payment_method" id="newPaymentMethodInput" class="form-control"
+                            value="<?= htmlspecialchars($expense['new_payment_method'] ?? '') ?>">
                     </div>
 
                     <!-- Expense Type -->
@@ -71,16 +72,20 @@
                         <select name="type" id="expenseType" class="form-select">
                             <option value="">-- Choose expense type --</option>
                             <?php foreach ($categories as $category): ?>
-                                <option value="<?= htmlspecialchars($category['id']) ?>"><?= htmlspecialchars($category['name']) ?></option>
+                                <option value="<?= htmlspecialchars($category['id']) ?>"
+                                    <?= $expense['category_id'] == $category['id'] ? 'selected' : '' ?>>
+                                    <?= htmlspecialchars($category['name']) ?>
+                                </option>
                             <?php endforeach; ?>
                             <option value="__new__">➕ Add new expense type</option>
                         </select>
                     </div>
 
                     <!-- New Expense Type -->
-                    <div id="newExpenseTypeGroup" style="display:none;">
+                    <div id="newExpenseTypeGroup" style="display: none;">
                         <label for="newExpenseTypeInput">New expense type:</label>
-                        <input type="text" name="new_expense_type" id="newExpenseTypeInput" class="form-control">
+                        <input type="text" name="new_expense_type" id="newExpenseTypeInput" class="form-control"
+                            value="<?= htmlspecialchars($expense['new_type'] ?? '') ?>">
                         <div id="newExpenseType-error" class="text-danger" style="display: none;">
                             Enter new type.
                         </div>
@@ -90,22 +95,20 @@
                     <div class="mb-1">
                         <label for="ex_description" class="form-label fw-semibold">Description</label>
                         <input
-                            value="<?php echo e($oldFormData['description'] ?? ''); ?>"
+                            value="<?= htmlspecialchars($expense['description']) ?>"
                             type="text"
-                            class="form-control <?php echo isset($errors['description']) ? 'is-invalid' : ''; ?>"
+                            class="form-control <?= isset($errors['description']) ? 'is-invalid' : '' ?>"
                             name="description"
                             id="ex_description">
                         <?php if (!empty($errors['description'][0])) : ?>
-                            <div class="invalid-feedback d-block">
-                                <?php echo e($errors['description'][0]); ?>
-                            </div>
+                            <div class="invalid-feedback d-block"><?= htmlspecialchars($errors['description'][0]) ?></div>
                         <?php endif; ?>
                     </div>
 
                     <!-- Buttons -->
                     <div class="d-flex flex-column flex-sm-row justify-content-center align-items-center gap-3 mt-4 mb-3">
-                        <button type="submit" class="btn btn-primary">Add expense</button>
-                        <a href="/" class="btn btn-secondary text-center">Cancel</a>
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                        <a href="/balance" class="btn btn-secondary text-center">Cancel</a>
                     </div>
 
                 </form>

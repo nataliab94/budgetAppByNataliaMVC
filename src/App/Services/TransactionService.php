@@ -123,33 +123,4 @@ class TransactionService
             ]
         );
     }
-    public function getUserIncomes(int $userId, string $startDate, string $endDate): array
-    {
-        return $this->db->query(
-            "SELECT i.amount, i.date_of_income, c.name AS category, i.income_comment AS description
-         FROM incomes i
-         JOIN incomes_category_assigned_to_users c
-           ON i.income_category_assigned_to_user_id = c.id
-         WHERE i.user_id = :user_id
-           AND i.date_of_income BETWEEN :start AND :end
-         ORDER BY i.date_of_income DESC",
-            ['user_id' => $userId, 'start' => $startDate, 'end' => $endDate]
-        )->findAll();
-    }
-
-    public function getUserExpenses(int $userId, string $startDate, string $endDate): array
-    {
-        return $this->db->query(
-            "SELECT e.amount, e.date_of_expense AS date, c.name AS category, p.name AS payment, e.expense_comment AS description
-         FROM expenses e
-         JOIN expenses_category_assigned_to_users c
-           ON e.expense_category_assigned_to_user_id = c.id
-         JOIN payment_methods_assigned_to_users p
-           ON e.payment_method_assigned_to_user_id = p.id
-         WHERE e.user_id = :user_id
-           AND e.date_of_expense BETWEEN :start AND :end
-         ORDER BY e.date_of_expense DESC",
-            ['user_id' => $userId, 'start' => $startDate, 'end' => $endDate]
-        )->findAll();
-    }
 }
